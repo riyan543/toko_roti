@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: toko-roti
-    env: docker
-    plan: free
-    dockerfilePath: ./Dockerfile
-    repo: https://github.com/riyan543/toko_roti
