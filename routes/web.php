@@ -7,47 +7,56 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\AdminRotiController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Api\RotiApiController;
 
 // Redirect ke beranda jika sudah login
 Route::get('/', function () {
-    if (FacadesAuth::check()) {
-        return redirect()->route('beranda');
-    }
-    return redirect()->route('login');
+    return FacadesAuth::check()
+        ? redirect()->route('beranda')
+        : redirect()->route('login');
 });
 
+// ====================
+// ✅ REST API
+// ====================
+Route::get('/rotis', [RotiApiController::class, 'index']);
+Route::get('/tes-api', fn () => ['pesan' => 'API aktif']);
 
+// ====================
+// ✅ User Terautentikasi
+// ====================
+Route::middleware(['auth'])->group(function () {
 
-// ✅ Grup route untuk admin (dengan middleware 'auth' & 'admin')
+    // ➤ Beranda pengguna biasa
+    Route::get('/beranda', [BerandaController::class, 'index'])
+        ->middleware('verified')
+        ->name('beranda');
+
+    // ➤ Profil pengguna
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ➤ Checkout & Keranjang
+    Route::get('/checkout', [CheckoutController::class, 'view'])->name('checkout.view');
+    Route::post('/checkout/add/{id}', [CheckoutController::class, 'add'])->name('checkout.add');
+    Route::post('/checkout/bayar', [CheckoutController::class, 'bayar'])->name('checkout.bayar');
+    Route::get('/checkout/pembayaran', [CheckoutController::class, 'pembayaran'])->name('checkout.pembayaran');
+    Route::delete('/checkout/hapus/{id}', [CheckoutController::class, 'hapus'])->name('checkout.hapus');
+
+});
+
+// ====================
+// ✅ Admin Panel
+// ====================
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminRotiController::class, 'index'])->name('admin.dashboard');
     Route::get('/transactions', [AdminRotiController::class, 'transactions'])->name('admin.transactions');
     Route::get('/users', [AdminRotiController::class, 'users'])->name('admin.users');
     Route::delete('/admin/transaksi/{id}', [AdminRotiController::class, 'destroy'])->name('admin.transaksi.destroy');
-
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-// ✅ Beranda user biasa
-Route::get('/beranda', [BerandaController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('beranda');
-
-// ✅ Grup route untuk user biasa (auth)
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::post('/checkout/add/{id}', [CheckoutController::class, 'add'])->name('checkout.add');
-    Route::get('/checkout', [CheckoutController::class, 'view'])->name('checkout.view');
-    Route::post('/checkout/bayar', [CheckoutController::class, 'bayar'])->name('checkout.bayar');
-});
-
+// ====================
+// ✅ Auth routes
+// ====================
 require __DIR__.'/auth.php';

@@ -8,24 +8,26 @@ use App\Models\User;
 
 class ProfileController extends Controller
 {
+    // Menampilkan halaman edit profil
     public function edit()
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user(); // pastikan bertipe User
+        $user = Auth::user(); // ambil user yang sedang login
         return view('profile.edit', compact('user'));
     }
 
+    // Memperbarui data profil user
     public function update(Request $request)
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
+        // Validasi data
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
         ]);
 
-        // Gunakan fill + save agar editor tidak salah deteksi
+        // Simpan data baru
         $user->fill($data);
         $user->save();
 
