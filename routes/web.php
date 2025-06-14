@@ -35,6 +35,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/beranda', [BerandaController::class, 'index'])
         ->middleware('verified')
         ->name('beranda');
+        Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
+
 
     // ➤ Profil pengguna
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

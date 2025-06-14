@@ -24,3 +24,4 @@ class BerandaController extends Controller
   
    
 }
+ 
