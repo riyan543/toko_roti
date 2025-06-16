@@ -10,8 +10,7 @@ use App\Http\Controllers\AdminRotiController;
 use App\Http\Controllers\Api\RotiApiController;
 
 // Redirect ke beranda jika sudah login
-Route::get('/', function () {
-    return FacadesAuth::check()
+Route::get('/', function () { return FacadesAuth::check()
         ? redirect()->route('beranda')
         : redirect()->route('login');
 });
