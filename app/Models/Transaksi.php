@@ -9,7 +9,7 @@ class Transaksi extends Model
 {
     use HasFactory;
 
-    // Field yang dapat diisi mass-assignment
+    // Field yang dapat diisi mass - assignment
     protected $fillable = [
         'user_id',
         'total_harga',
