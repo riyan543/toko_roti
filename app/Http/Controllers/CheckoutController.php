@@ -11,7 +11,7 @@ use Carbon\Carbon;
 
 class CheckoutController extends Controller
 {
-    // Menambahkan item ke keranjang
+    //Menambahkan item ke keranjang
     public function add($id)
     {
         $user = Auth::user();
@@ -25,12 +25,12 @@ class CheckoutController extends Controller
         return redirect()->back();
     }
 
-    // Menyimpan transaksi dan menghapus isi keranjang
+    //Menyimpan transaksi dan menghapus isi keranjang
     public function bayar()
     {
         $user = Auth::user();
 
-        // Ambil isi keranjang user
+        //Ambil isi keranjang user
         $items = Keranjang::with('roti')->where('user_id', $user->id)->get();
 
         if ($items->isEmpty()) {
@@ -61,7 +61,7 @@ class CheckoutController extends Controller
         return redirect()->route('checkout.pembayaran')->with('success', 'Transaksi berhasil disimpan.');
     }
 
-    // Menampilkan isi keranjang user
+    //Menampilkan isi keranjang user
     public function view()
     {
         $user = Auth::user();
