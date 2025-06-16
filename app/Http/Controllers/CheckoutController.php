@@ -19,7 +19,7 @@ class CheckoutController extends Controller
         Keranjang::create([
             'user_id' => $user->id,
             'roti_id' => $id,
-            'jumlah' => 1,
+            'jumlah'  => 1,
         ]);
 
         return redirect()->back();
@@ -31,7 +31,9 @@ class CheckoutController extends Controller
         $user = Auth::user();
 
         // Ambil isi keranjang user
-        $items = Keranjang::with('roti')->where('user_id', $user->id)->get();
+        $items = Keranjang::with('roti')
+            ->where('user_id', $user->id)
+            ->get();
 
         if ($items->isEmpty()) {
             return back()->with('error', 'Keranjang Anda kosong.');
@@ -42,15 +44,15 @@ class CheckoutController extends Controller
 
         // Buat transaksi baru
         $transaksi = Transaksi::create([
-            'user_id' => $user->id,
+            'user_id'     => $user->id,
             'total_harga' => $total,
-            'status' => 'berhasil',
+            'status'      => 'berhasil',
         ]);
 
         // Simpan detail roti ke pivot table transaksi_roti
         foreach ($items as $item) {
             $transaksi->rotis()->attach($item->roti_id, [
-                'jumlah' => $item->jumlah,
+                'jumlah'   => $item->jumlah,
                 'subtotal' => $item->jumlah * $item->roti->harga,
             ]);
         }
@@ -58,13 +60,15 @@ class CheckoutController extends Controller
         // Kosongkan keranjang setelah transaksi
         Keranjang::where('user_id', $user->id)->delete();
 
-        return redirect()->route('checkout.pembayaran')->with('success', 'Transaksi berhasil disimpan.');
+        return redirect()->route('checkout.pembayaran')
+            ->with('success', 'Transaksi berhasil disimpan.');
     }
 
     // Menampilkan isi keranjang user
     public function view()
     {
         $user = Auth::user();
+
         $keranjang = Keranjang::with('roti')
             ->where('user_id', $user->id)
             ->get();
@@ -78,10 +82,13 @@ class CheckoutController extends Controller
         $user = Auth::user();
 
         // Ambil transaksi terakhir user
-        $transaksi = Transaksi::where('user_id', $user->id)->latest()->first();
+        $transaksi = Transaksi::where('user_id', $user->id)
+            ->latest()
+            ->first();
 
         if (!$transaksi) {
-            return redirect()->route('checkout.view')->with('error', 'Tidak ada transaksi ditemukan.');
+            return redirect()->route('checkout.view')
+                ->with('error', 'Tidak ada transaksi ditemukan.');
         }
 
         return view('pembayaran', compact('transaksi'));
@@ -99,8 +106,7 @@ class CheckoutController extends Controller
 
         $item->delete();
 
-        return redirect()->route('checkout.view')->with('success', 'Produk berhasil dihapus dari keranjang.');
+        return redirect()->route('checkout.view')
+            ->with('success', 'Produk berhasil dihapus dari keranjang.');
     }
-
-
 }

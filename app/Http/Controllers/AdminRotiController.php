@@ -37,10 +37,11 @@ class AdminRotiController extends Controller
 
         return redirect()->route('admin.transactions')->with('success', 'Transaksi berhasil dihapus.');
     }
-    public function show($id)
-{
-    $transaksi = Transaksi::with('user', 'rotis')->findOrFail($id);
-    return view('admin.detailtransaksi', compact('transaksi'));
-}
 
+    // Menampilkan detail transaksi berdasarkan ID
+    public function show($id)
+    {
+        $transaksi = Transaksi::with('user', 'rotis')->findOrFail($id);
+        return view('admin.detailtransaksi', compact('transaksi'));
+    }
 }

@@ -20,7 +20,4 @@ class BerandaController extends Controller
         $rotis = Roti::all();
         return view('beranda', compact('rotis'));
     }
-
-  
-   
 }

@@ -11,7 +11,7 @@ class ProfileController extends Controller
     //Menampilkan halaman edit profil
     public function edit()
     {
-        $user = Auth::user(); // ambil user yang sedang login
+        $user = Auth::user(); // Ambil user yang sedang login
         return view('profile.edit', compact('user'));
     }
 
@@ -23,7 +23,7 @@ class ProfileController extends Controller
 
         //Validasi data
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
         ]);
 
@@ -31,6 +31,7 @@ class ProfileController extends Controller
         $user->fill($data);
         $user->save();
 
-        return redirect()->route('profile.edit')->with('success', 'Profil berhasil diperbarui.');
+        return redirect()->route('profile.edit')
+            ->with('success', 'Profil berhasil diperbarui.');
     }
 }
