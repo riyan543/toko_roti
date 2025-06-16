@@ -10,7 +10,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // Field yang dapat diisi mass-assignment
+    // Field yang dapat diisi mass - assignment
     protected $fillable = [
         'name',
         'email',
